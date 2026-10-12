@@ -641,6 +641,10 @@ button {
   grid-template-columns: repeat(3, 1fr);
   gap: 0 44px;
 }
+.tag-grid--kinds {
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  margin-top: 20px;
+}
 .tag-grid li {
   border-bottom: 1px solid var(--rule);
 }

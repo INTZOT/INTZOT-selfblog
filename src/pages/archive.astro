@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { KINDS, SITE } from '../consts';
-import { formatShortDate, getPublished, kindOf, urlOf } from '../utils/articles';
+import { formatShortDate, getPublished, urlOf } from '../utils/articles';
 
 const all = await getPublished();
 
@@ -37,7 +36,7 @@ const years = [...byYear.keys()].sort((a, b) => b.localeCompare(a));
               <a href={urlOf(article)}>
                 <span class="d">{formatShortDate(article.data.date)}</span>
                 <span class="t">{article.data.title}</span>
-                <span class="k">{KINDS[kindOf(article)].label}</span>
+                <span class="k">{article.data.tags[0] ?? ''}</span>
               </a>
             </li>
           ))}

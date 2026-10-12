@@ -2,15 +2,7 @@
 import PostList from './PostList.astro';
 import Pagination from './Pagination.astro';
 import { Image } from 'astro:assets';
-import { KINDS } from '../consts';
-import {
-  excerptOf,
-  formatDate,
-  kindOf,
-  readingMinutes,
-  urlOf,
-  type Article,
-} from '../utils/articles';
+import { excerptOf, formatDate, readingMinutes, urlOf, type Article } from '../utils/articles';
 
 interface Props {
   masthead: {
@@ -29,13 +21,12 @@ const { masthead, articles, currentPage, totalPages, prevUrl, nextUrl } = Astro.
 // 第 1 页才出头条；它从列表里摘掉，避免同一篇出现两次（§10.7 页面清单）
 const hero = currentPage === 1 ? articles[0] : undefined;
 const rest = hero ? articles.slice(1) : articles;
-const heroKind = hero ? kindOf(hero) : null;
 ---
 
 <div class="masthead">
   <h1>INTZOT</h1>
   <p class="masthead__sub">
-    写代码，也写生活。技术笔记与生活随笔，共 {masthead.total} 篇，{masthead.tagCount} 个标签。
+    写代码，也写生活。共 {masthead.total} 篇，{masthead.tagCount} 个标签。
   </p>
   <div class="masthead__rule"></div>
 </div>
@@ -64,7 +55,9 @@ const heroKind = hero ? kindOf(hero) : null;
       </h2>
       <p class="hero__desc">{excerptOf(hero, 120)}</p>
       <span class="post-item__meta">
-        {KINDS[heroKind!].label} · {readingMinutes(hero.body)} 分钟
+        {hero.data.tags.map((tag) => '#' + tag).join(' ')}
+        {hero.data.tags.length > 0 && ' · '}
+        {readingMinutes(hero.body)} 分钟
       </span>
     </article>
   )

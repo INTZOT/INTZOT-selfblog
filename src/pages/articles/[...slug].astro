@@ -5,13 +5,10 @@ import { seriesNav } from '../../utils/articles';
 
 export async function getStaticPaths() {
   const all = await getCollection('articles', ({ data }) => !data.draft);
-  const prefix = 'posts/';
-  return all
-    .filter((article) => article.id.startsWith(prefix))
-    .map((article) => ({
-      params: { slug: article.id.slice(prefix.length) },
-      props: { article, series: seriesNav(all, article) },
-    }));
+  return all.map((article) => ({
+    params: { slug: article.id },
+    props: { article, series: seriesNav(all, article) },
+  }));
 }
 
 const { article, series } = Astro.props;

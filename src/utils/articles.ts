@@ -1,27 +1,16 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { KINDS, type Kind } from '../consts';
+import { ARTICLE_PREFIX } from '../consts';
 
 export type Article = CollectionEntry<'articles'>;
 
-/**
- * 文章 id 形如：
- *   posts/rust-bedrock-renderer   → 技术
- *   notes/2026-10-06              → 随笔
- *
- * 类型由目录推导，frontmatter 里没有 kind 字段（§12.3 能推导的不问）。
- */
-export function kindOf(article: Article): Kind {
-  return article.id.startsWith('notes/') ? 'notes' : 'posts';
-}
-
-/** 目录内的部分，即链接里最后一段 */
+/** 文章的 id 就是目录名，也就是链接末段（§13.1） */
 export function slugOf(article: Article): string {
-  return article.id.slice(article.id.indexOf('/') + 1);
+  return article.id;
 }
 
-/** §13.1 的链接规则：/posts/<slug>/ 与 /notes/<slug>/ */
+/** §13.1：统一为 /articles/<slug>/ */
 export function urlOf(article: Article): string {
-  return KINDS[kindOf(article)].prefix + slugOf(article) + '/';
+  return ARTICLE_PREFIX + encodeURI(article.id) + '/';
 }
 
 /** 按日期倒序。同日则按目录名排，保证顺序稳定 */
@@ -34,10 +23,6 @@ export function sortByDate(list: Article[]): Article[] {
 /** §13.3：草稿不进任何列表、归档、标签、订阅 */
 export async function getPublished(): Promise<Article[]> {
   return sortByDate(await getCollection('articles', ({ data }) => !data.draft));
-}
-
-export function byKind(list: Article[], kind: Kind): Article[] {
-  return list.filter((article) => kindOf(article) === kind);
 }
 
 /** 阅读时长：中文按 350 字/分，拉丁按 200 词/分 */
@@ -83,6 +68,11 @@ export function formatShortDate(date: Date): string {
   return m + '-' + d;
 }
 
+/** 标签链接 */
+export function tagUrl(tag: string): string {
+  return '/tags/' + encodeURIComponent(tag) + '/';
+}
+
 /** 全部标签及使用次数，按频次降序（§10.7 标签总览） */
 export function countTags(list: Article[]): [string, number][] {
   const counts = new Map<string, number>();
@@ -94,21 +84,10 @@ export function countTags(list: Article[]): [string, number][] {
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
-/** 系列及其文章（按日期正序，方便「上一篇 / 下一篇」） */
-export function groupSeries(list: Article[]): Map<string, Article[]> {
-  const groups = new Map<string, Article[]>();
-  for (const article of sortByDate(list).reverse()) {
-    const name = article.data.series;
-    if (!name) continue;
-    groups.set(name, [...(groups.get(name) ?? []), article]);
-  }
-  return groups;
-}
-
 /**
  * §13.5 的分页链接规则。
- * base 是第 1 页的地址：'/' 或 '/posts/'；第 2 页起变成 <base>page/N/。
- * 用固定的 page 段而不是 /posts/2/，避免和文章目录名撞车。
+ * base 是第 1 页的地址：'/' 或 '/articles/'；第 2 页起变成 <base>page/N/。
+ * 用固定的 page 段而不是 /articles/2/，避免和文章目录名撞车。
  */
 export function pageUrl(base: string, page: number): string {
   return page <= 1 ? base : base + 'page/' + page + '/';

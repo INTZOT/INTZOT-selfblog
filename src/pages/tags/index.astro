@@ -1,10 +1,16 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { countTags, getPublished } from '../../utils/articles';
+import { countTags, getPublished, tagUrl } from '../../utils/articles';
+import { KIND_TAGS } from '../../consts';
 
 const all = await getPublished();
-// §10.7：标签总览按使用频次排序，不是字母序——最活跃的主题自然浮到前面
 const tags = countTags(all);
+
+// 体裁标签（技术 / 随笔）单独一块：它们是「这是什么」，不是「关于什么」，
+// 混在主题标签里会让标签云失去意义。
+const kindSet = new Set<string>(KIND_TAGS);
+const kinds = tags.filter(([tag]) => kindSet.has(tag));
+const topics = tags.filter(([tag]) => !kindSet.has(tag));
 ---
 
 <Base title="标签">
@@ -17,11 +23,34 @@ const tags = countTags(all);
   </div>
 
   {
-    tags.length > 0 ? (
+    kinds.length > 0 && (
+      <>
+        <div class="section-head">
+          <h2>体裁</h2>
+        </div>
+        <ul class="tag-grid tag-grid--kinds">
+          {kinds.map(([tag, count]) => (
+            <li>
+              <a href={tagUrl(tag)}>
+                <span class="name">{tag}</span>
+                <span class="c">{count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+
+  <div class="section-head">
+    <h2>主题</h2>
+  </div>
+  {
+    topics.length > 0 ? (
       <ul class="tag-grid">
-        {tags.map(([tag, count]) => (
+        {topics.map(([tag, count]) => (
           <li>
-            <a href={'/tags/' + encodeURIComponent(tag) + '/'}>
+            <a href={tagUrl(tag)}>
               <span class="name">{tag}</span>
               <span class="c">{count}</span>
             </a>
@@ -29,7 +58,7 @@ const tags = countTags(all);
         ))}
       </ul>
     ) : (
-      <p class="year__empty">还没有标签。文章里写上的标签会出现在这里。</p>
+      <p class="year__empty">还没有主题标签。文章里写上的标签会出现在这里。</p>
     )
   }
 </Base>

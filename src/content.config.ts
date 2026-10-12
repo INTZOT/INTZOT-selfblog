@@ -7,12 +7,13 @@ import tagList from '../content/tags.json';
 /**
  * §13.2：每篇文章是一个目录，正文固定叫 index.md，配图放在同一目录里。
  *
- * 目录名决定链接与类型（§13.1）：
- *   content/posts/rust-bedrock-renderer/index.md  →  /posts/rust-bedrock-renderer/
- *   content/notes/2026-10-06/index.md             →  /notes/2026-10-06/
+ *   content/articles/rust-bedrock-renderer/index.md  →  /articles/rust-bedrock-renderer/
  *
- * 因此 frontmatter 里**没有 kind 字段**——类型由目录推导，
- * 符合 §12.3「能推导的不问」。少一个字段就少一处填错的机会。
+ * §13.1（2026-10-12 修订）：链接前缀统一为 /articles/，
+ * **类型（技术 / 随笔）不再决定链接**，它就是一个普通标签。
+ *
+ * 这么改的直接好处：原来「发布后不能改类型」那条约束（因为类型决定前缀）
+ * 随之消失——类型现在可以随时改，不会动到链接。
  */
 const articleSchema = ({ image }: SchemaContext) =>
   z.object({
@@ -44,10 +45,9 @@ const articleSchema = ({ image }: SchemaContext) =>
 
 const articles = defineCollection({
   loader: glob({
-    base: './content',
-    // tags.json 不在匹配范围内
-    pattern: '*/**/index.md',
-    // content/posts/foo/index.md → posts/foo
+    base: './content/articles',
+    pattern: '*/index.md',
+    // <slug>/index.md → <slug>，文章的 id 就是它的链接末段
     generateId: ({ entry }) => entry.replace(/\/index\.md$/, ''),
   }),
   schema: articleSchema,

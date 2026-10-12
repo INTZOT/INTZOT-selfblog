@@ -1,15 +1,14 @@
 ---
 import { Image } from 'astro:assets';
-import { KINDS } from '../consts';
-import { excerptOf, formatDate, kindOf, readingMinutes, urlOf, type Article } from '../utils/articles';
+import { excerptOf, formatDate, readingMinutes, urlOf, type Article } from '../utils/articles';
 
 interface Props {
   article: Article;
 }
 
 const { article } = Astro.props;
-const kind = kindOf(article);
 const cover = article.data.cover;
+const tags = article.data.tags;
 ---
 
 <li>
@@ -21,7 +20,9 @@ const cover = article.data.cover;
       <h3 class="post-item__title">{article.data.title}</h3>
       <p class="post-item__desc">{excerptOf(article)}</p>
       <span class="post-item__meta">
-        {KINDS[kind].label} · {readingMinutes(article.body)} 分钟
+        {tags.map((tag) => '#' + tag).join(' ')}
+        {tags.length > 0 && ' · '}
+        {readingMinutes(article.body)} 分钟
       </span>
     </div>
     {

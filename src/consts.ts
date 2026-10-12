@@ -12,22 +12,24 @@ export const SITE = {
   since: '2026 年 9 月',
 } as const;
 
-/** 导航。顺序即显示顺序（§10.7 页面清单）。 */
+/**
+ * 导航。顺序即显示顺序。
+ *
+ * §13.1（2026-10-12 修订）：原来的 posts / notes / archive 三项统一成「文章」。
+ * 类型（技术 / 随笔）降为普通标签，不再占导航层级。
+ */
 export const NAV = [
-  { href: '/posts/', label: 'posts' },
-  { href: '/notes/', label: 'notes' },
-  { href: '/archive/', label: 'archive' },
-  { href: '/tags/', label: 'tags' },
-  { href: '/about/', label: 'about' },
+  { href: '/articles/', label: '文章' },
+  { href: '/archive/', label: '归档' },
+  { href: '/tags/', label: '标签' },
+  { href: '/about/', label: '关于' },
 ] as const;
 
-/** 类型 → 链接前缀与显示名（§13.1） */
-export const KINDS = {
-  posts: { label: '技术', prefix: '/posts/' },
-  notes: { label: '随笔', prefix: '/notes/' },
-} as const;
+/** 全部文章的统一链接前缀（§13.1） */
+export const ARTICLE_PREFIX = '/articles/';
 
-export type Kind = keyof typeof KINDS;
-
-/** §13.5：首页与列表页每页 20 篇；归档、标签、搜索不分页 */
+/** §13.5：列表页每页 20 篇；归档、标签、搜索不分页 */
 export const PAGE_SIZE = 20;
+
+/** 表达「类型」的保留标签。它们和普通标签同级，只是语义上表示内容体裁。 */
+export const KIND_TAGS = ['技术', '随笔'] as const;

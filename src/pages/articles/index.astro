@@ -1,17 +1,22 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ListView from '../../components/ListView.astro';
-import { byKind, getPublished, pageUrl } from '../../utils/articles';
+import { getPublished, pageUrl } from '../../utils/articles';
 import { PAGE_SIZE } from '../../consts';
 
-const all = byKind(await getPublished(), 'posts');
+const all = await getPublished();
 const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
 ---
 
-<Base title="技术">
+<Base title="文章">
   <div class="masthead">
-    <h1>技术</h1>
-    <p class="masthead__sub">共  篇。解决某个问题之后的复盘。{all.length} 篇。解决某个问题之后的复盘。</p>
+    <h1>文章</h1>
+    <p class="masthead__sub">
+      全部 {all.length} 篇，按时间倒序。想看更紧凑的列表就去<a
+        href="/archive/"
+        style="color:var(--accent)">归档</a
+      >。
+    </p>
     <div class="masthead__rule"></div>
   </div>
 
@@ -19,8 +24,8 @@ const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
     articles={all.slice(0, PAGE_SIZE)}
     currentPage={1}
     totalPages={totalPages}
-    nextUrl={totalPages > 1 ? pageUrl('/posts/', 2) : undefined}
-    emptyTitle="还没有技术笔记。"
+    nextUrl={totalPages > 1 ? pageUrl('/articles/', 2) : undefined}
+    emptyTitle="还没有文章。"
     emptyHint="第一篇写出来之后，这里会开始有东西。"
   />
 </Base>
