@@ -1,0 +1,79 @@
+---
+import 'katex/dist/katex.min.css';
+import Base from './Base.astro';
+import { KINDS } from '../consts';
+import { formatDate, kindOf, readingMinutes, type Article } from '../utils/articles';
+
+interface SeriesNav {
+  name: string;
+  index: number;
+  total: number;
+  prev: { url: string; title: string } | null;
+  next: { url: string; title: string } | null;
+}
+
+interface Props {
+  article: Article;
+  series?: SeriesNav | null;
+}
+
+const { article, series = null } = Astro.props;
+const kind = kindOf(article);
+const { data, body } = article;
+const desc = data.description ?? '';
+---
+
+<Base title={data.title} description={desc} article>
+  <article>
+    <div class="article-head">
+      <time class="article-head__date" datetime={data.date.toISOString()}>
+        {formatDate(data.date)}
+      </time>
+      <div>
+        <div class="article-head__kind">
+          {KINDS[kind].label} · {readingMinutes(body)} 分钟
+        </div>
+        <h1 data-pagefind-meta="title">{data.title}</h1>
+        {desc && <p class="article-head__lead">{desc}</p>}
+      </div>
+      <div class="article-head__rule"></div>
+    </div>
+
+    {
+      series && (
+        <nav class="series-nav" aria-label="系列导航" data-pagefind-ignore>
+          <span class="series-nav__name">{series.name}</span>{' '}
+          <span>
+            （{series.index} / {series.total}）
+          </span>
+          <div class="series-nav__links">
+            {series.prev && (
+              <a href={series.prev.url}>← {series.prev.title}</a>
+            )}
+            {series.next && (
+              <a class="series-nav__next" href={series.next.url}>
+                {series.next.title} →
+              </a>
+            )}
+          </div>
+        </nav>
+      )
+    }
+
+    {data.tags.length > 0 && (
+      <p class="article-tags" data-pagefind-ignore>
+        {data.tags.map((tag) => (
+          <a href={'/tags/' + encodeURIComponent(tag) + '/'}>#{tag}</a>
+        ))}
+      </p>
+    )}
+
+    <div class="prose" data-pagefind-body>
+      <slot />
+    </div>
+  </article>
+
+  <p class="article-foot" data-pagefind-ignore>
+    <a href={KINDS[kind].prefix}>← 返回{KINDS[kind].label}</a>
+  </p>
+</Base>

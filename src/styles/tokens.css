@@ -1,0 +1,54 @@
+/* ============================================================
+   设计令牌 —— 规格见 docs/PLANNING.md §10.7
+   改这里的值会影响全站，改之前先确认 §10.7 是否也要一起改。
+   ============================================================ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---------- 配色（§10.7） ---------- */
+  --paper: #faf8f5;        /* 纸面 */
+  --ink: #1a1a1a;          /* 墨色 */
+  --ink-muted: #5c5751;    /* 次要文字 */
+  --ink-subtle: #948c83;   /* 三级文字：日期、计数、元信息 */
+  --rule: #e4ded4;         /* 分隔线 */
+  --accent: #b3391f;       /* 强调色：朱红 */
+
+  --mark: rgb(179 57 31 / 16%);   /* 搜索命中高亮 */
+
+  /* ---------- 字体（§10.7） ----------
+     标题与引用用中文衬线，正文与界面用系统无衬线，代码用系统等宽。
+     衬线没有自托管：中文衬线字体动辄数 MB，会直接违反 §6 的「国内首屏 1 秒」。
+     代价是 Windows 上标题会落到宋体，在 40px 以上的显示字号下可以接受。 */
+  --font-display:
+    'Source Han Serif SC', 'Noto Serif CJK SC', 'Songti SC', 'SimSun', Georgia, 'Times New Roman',
+    serif;
+  --font-body:
+    -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  /* ---------- 版式（§10.7） ---------- */
+  --max-app: 1080px;       /* 页面容器宽度 */
+  --measure: 700px;        /* 正文行宽，规格是 660–700 */
+  --date-col: 132px;       /* 列表与文章页左侧日期列 */
+  --thumb-col: 152px;      /* 列表右侧缩略图列，固定宽以保持标题左边缘对齐 */
+
+  --lh-prose: 1.88;        /* 正文行高，规格是 1.85–1.9 */
+
+  /* ---------- 圆角 ---------- */
+  --radius: 2px;           /* 杂志风：几乎不用圆角 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #161519;
+    --ink: #ece7e0;
+    --ink-muted: #a9a29a;
+    --ink-subtle: #7b746c;
+    --rule: #2f2d34;
+    --accent: #e0704c;
+
+    --mark: rgb(224 112 76 / 24%);
+  }
+}

@@ -1,0 +1,56 @@
+---
+import '../styles/global.css';
+import { SITE } from '../consts';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 文章页传 true：正文成为搜索索引范围（§14.4 只索引文章） */
+  article?: boolean;
+}
+
+const { title, description, article = false } = Astro.props;
+
+const path = Astro.url.pathname;
+const canonical = new URL(path, SITE.url).href;
+const desc = description ?? SITE.description;
+const pageTitle = title ? title + ' · ' + SITE.title : SITE.title + ' · ' + SITE.tagline;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-pagefind-ignore={article ? undefined : 'all'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
+
+    <slot name="head" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <SiteHeader path={path} />
+
+    <main id="main">
+      <div class="wrap">
+        <slot />
+      </div>
+    </main>
+
+    <SiteFooter />
+  </body>
+</html>

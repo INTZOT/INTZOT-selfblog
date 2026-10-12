@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import { KINDS, SITE } from '../consts';
+import { formatShortDate, getPublished, kindOf, urlOf } from '../utils/articles';
+
+const all = await getPublished();
+
+// §10.7：按年份分组，不放摘要与配图——归档是用来扫的。
+// 分页也取消（§13.5）：一百来行可以一次滚完，分页反而破坏「一眼看全」。
+const byYear = new Map<string, typeof all>();
+for (const article of all) {
+  const year = String(article.data.date.getFullYear());
+  byYear.set(year, [...(byYear.get(year) ?? []), article]);
+}
+const years = [...byYear.keys()].sort((a, b) => b.localeCompare(a));
+---
+
+<Base title="归档">
+  <div class="masthead">
+    <h1>归档</h1>
+    <p class="masthead__sub">
+      全部 {all.length} 篇，按时间倒序。这里不放摘要和配图——归档是用来扫的，不是用来读的。
+    </p>
+    <div class="masthead__rule"></div>
+  </div>
+
+  {
+    years.map((year) => (
+      <section class="year">
+        <div class="year__head">
+          <h2>{year}</h2>
+          <span>{byYear.get(year)?.length} 篇</span>
+        </div>
+        <ul class="archive-list">
+          {(byYear.get(year) ?? []).map((article) => (
+            <li>
+              <a href={urlOf(article)}>
+                <span class="d">{formatShortDate(article.data.date)}</span>
+                <span class="t">{article.data.title}</span>
+                <span class="k">{KINDS[kindOf(article)].label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  {all.length === 0 && <p class="year__empty">还没有文章，所以这里也是空的。</p>}
+</Base>

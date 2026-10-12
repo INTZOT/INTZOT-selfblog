@@ -1,0 +1,42 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../../layouts/Base.astro';
+import ListView from '../../../components/ListView.astro';
+import { byKind, getPublished, pageUrl } from '../../../utils/articles';
+import { PAGE_SIZE } from '../../../consts';
+import type { Article } from '../../../utils/articles';
+
+interface Props {
+  page: {
+    data: Article[];
+    currentPage: number;
+    totalPages: number;
+    url: { current: string; prev?: string; next?: string };
+  };
+}
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
+  const all = byKind(await getPublished(), 'notes');
+  const pages = paginate(all, { pageSize: PAGE_SIZE });
+  return pages.filter((entry) => (entry.props as unknown as Props).page.currentPage > 1);
+};
+
+const { page } = Astro.props;
+const base = '/notes/';
+---
+
+<Base title="随笔">
+  <div class="masthead">
+    <h1>随笔</h1>
+    <p class="masthead__sub">第 {page.currentPage} 页，共 {page.totalPages} 页。</p>
+    <div class="masthead__rule"></div>
+  </div>
+
+  <ListView
+    articles={page.data}
+    currentPage={page.currentPage}
+    totalPages={page.totalPages}
+    prevUrl={pageUrl(base, page.currentPage - 1)}
+    nextUrl={page.currentPage < page.totalPages ? pageUrl(base, page.currentPage + 1) : undefined}
+  />
+</Base>

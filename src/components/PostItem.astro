@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+import { KINDS } from '../consts';
+import { excerptOf, formatDate, kindOf, readingMinutes, urlOf, type Article } from '../utils/articles';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const kind = kindOf(article);
+const cover = article.data.cover;
+---
+
+<li>
+  <a class="post-item" href={urlOf(article)}>
+    <time class="post-item__date" datetime={article.data.date.toISOString()}>
+      {formatDate(article.data.date)}
+    </time>
+    <div>
+      <h3 class="post-item__title">{article.data.title}</h3>
+      <p class="post-item__desc">{excerptOf(article)}</p>
+      <span class="post-item__meta">
+        {KINDS[kind].label} · {readingMinutes(article.body)} 分钟
+      </span>
+    </div>
+    {
+      cover ? (
+        <Image
+          class="post-item__thumb"
+          src={cover}
+          alt=""
+          width={384}
+          height={288}
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span class="post-item__thumb--none" aria-hidden="true">无配图</span>
+      )
+    }
+  </a>
+</li>

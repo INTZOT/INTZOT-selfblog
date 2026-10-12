@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../consts';
+import { countTags, getPublished } from '../utils/articles';
+
+const all = await getPublished();
+const tags = countTags(all);
+---
+
+<Base title="关于" description={SITE.description}>
+  <div class="masthead">
+    <h1>关于</h1>
+    <p class="masthead__sub">这个博客是什么，为什么存在，以及它是怎么做出来的。</p>
+    <div class="masthead__rule"></div>
+  </div>
+
+  <div class="colophon">
+    <div>
+      <p class="colophon__statement">
+        我写代码，也写别的东西。技术笔记通常是解决某个问题之后的复盘，生活随笔则大多没有结论——它们只是被记下来了。
+      </p>
+      <p class="colophon__statement">
+        这个站存在的理由很简单：散落在本地文件和聊天记录里的东西，过一阵子就找不到了，而且没人能引用它。
+      </p>
+    </div>
+
+    <dl>
+      <dt>作者</dt><dd>{SITE.author}</dd>
+      <dt>开始于</dt><dd>{SITE.since}</dd>
+      <dt>文章数</dt><dd>{all.length}</dd>
+      <dt>标签数</dt><dd>{tags.length}</dd>
+      <dt>写作方式</dt><dd>Markdown，存在 Git 仓库里</dd>
+      <dt>评论</dt><dd>没有。想说什么可以直接发邮件</dd>
+      <dt>订阅</dt><dd><a href="/rss.xml">RSS</a></dd>
+      <dt>联系</dt>
+      <dd>
+        <a href={'mailto:' + SITE.email}>{SITE.email}</a> · <a href={SITE.github}>GitHub</a>
+      </dd>
+    </dl>
+  </div>
+</Base>

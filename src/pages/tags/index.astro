@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { countTags, getPublished } from '../../utils/articles';
+
+const all = await getPublished();
+// §10.7：标签总览按使用频次排序，不是字母序——最活跃的主题自然浮到前面
+const tags = countTags(all);
+---
+
+<Base title="标签">
+  <div class="masthead">
+    <h1>标签</h1>
+    <p class="masthead__sub">
+      共 {tags.length} 个标签、{all.length} 篇文章。按使用频次排序。
+    </p>
+    <div class="masthead__rule"></div>
+  </div>
+
+  {
+    tags.length > 0 ? (
+      <ul class="tag-grid">
+        {tags.map(([tag, count]) => (
+          <li>
+            <a href={'/tags/' + encodeURIComponent(tag) + '/'}>
+              <span class="name">{tag}</span>
+              <span class="c">{count}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="year__empty">还没有标签。文章里写上的标签会出现在这里。</p>
+    )
+  }
+</Base>

@@ -1,0 +1,90 @@
+---
+import PostList from './PostList.astro';
+import Pagination from './Pagination.astro';
+import { Image } from 'astro:assets';
+import { KINDS } from '../consts';
+import {
+  excerptOf,
+  formatDate,
+  kindOf,
+  readingMinutes,
+  urlOf,
+  type Article,
+} from '../utils/articles';
+
+interface Props {
+  masthead: {
+    total: number;
+    tagCount: number;
+  };
+  articles: Article[];
+  currentPage: number;
+  totalPages: number;
+  prevUrl?: string;
+  nextUrl?: string;
+}
+
+const { masthead, articles, currentPage, totalPages, prevUrl, nextUrl } = Astro.props;
+
+// 第 1 页才出头条；它从列表里摘掉，避免同一篇出现两次（§10.7 页面清单）
+const hero = currentPage === 1 ? articles[0] : undefined;
+const rest = hero ? articles.slice(1) : articles;
+const heroKind = hero ? kindOf(hero) : null;
+---
+
+<div class="masthead">
+  <h1>INTZOT</h1>
+  <p class="masthead__sub">
+    写代码，也写生活。技术笔记与生活随笔，共 {masthead.total} 篇，{masthead.tagCount} 个标签。
+  </p>
+  <div class="masthead__rule"></div>
+</div>
+
+{
+  hero && (
+    <article class="hero">
+      {hero.data.cover && (
+        <a href={urlOf(hero)}>
+          <Image
+            class="article-cover"
+            src={hero.data.cover}
+            alt=""
+            width={1080}
+            height={463}
+            loading="eager"
+            decoding="async"
+          />
+        </a>
+      )}
+      <time class="hero__date" datetime={hero.data.date.toISOString()}>
+        {formatDate(hero.data.date)}
+      </time>
+      <h2 class="hero__title">
+        <a href={urlOf(hero)}>{hero.data.title}</a>
+      </h2>
+      <p class="hero__desc">{excerptOf(hero, 120)}</p>
+      <span class="post-item__meta">
+        {KINDS[heroKind!].label} · {readingMinutes(hero.body)} 分钟
+      </span>
+    </article>
+  )
+}
+
+<div class="section-head">
+  <h2>最近更新</h2>
+  <span class="count">共 {masthead.total} 篇</span>
+</div>
+
+<PostList
+  articles={rest}
+  emptyTitle="还没有文章。"
+  emptyHint="第一篇写出来之后，这里会开始有东西。"
+/>
+
+<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  prevUrl={prevUrl}
+  nextUrl={nextUrl}
+  archiveHref="/archive/"
+/>

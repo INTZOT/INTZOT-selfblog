@@ -1,0 +1,34 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  prevUrl?: string;
+  nextUrl?: string;
+  /** 分页两端之外的去处，首页用 */
+  archiveHref?: string;
+}
+
+const { currentPage, totalPages, prevUrl, nextUrl, archiveHref } = Astro.props;
+---
+
+{
+  totalPages > 1 && (
+    <nav class="pagination" aria-label="分页">
+      <span>
+        {prevUrl ? <a href={prevUrl}>← 更新的</a> : <span aria-hidden="true">←</span>}
+      </span>
+      <span>
+        第 {currentPage} / {totalPages} 页
+        {archiveHref && (
+          <>
+            {' · '}
+            <a href={archiveHref}>全部文章</a>
+          </>
+        )}
+      </span>
+      <span>
+        {nextUrl ? <a href={nextUrl}>更早的 →</a> : <span aria-hidden="true">→</span>}
+      </span>
+    </nav>
+  )
+}

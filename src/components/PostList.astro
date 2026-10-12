@@ -1,0 +1,28 @@
+---
+import PostItem from './PostItem.astro';
+import type { Article } from '../utils/articles';
+
+interface Props {
+  articles: Article[];
+  /** 列表为空时的说法，各页不同 */
+  emptyTitle?: string;
+  emptyHint?: string;
+}
+
+const { articles, emptyTitle = '还没有文章。', emptyHint = '' } = Astro.props;
+---
+
+{
+  articles.length > 0 ? (
+    <ul class="post-list">
+      {articles.map((article) => (
+        <PostItem article={article} />
+      ))}
+    </ul>
+  ) : (
+    <div class="empty-state">
+      <strong>{emptyTitle}</strong>
+      {emptyHint && <span>{emptyHint}</span>}
+    </div>
+  )
+}

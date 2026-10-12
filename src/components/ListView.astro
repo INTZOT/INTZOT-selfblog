@@ -1,0 +1,26 @@
+---
+import PostList from './PostList.astro';
+import Pagination from './Pagination.astro';
+import type { Article } from '../utils/articles';
+
+interface Props {
+  articles: Article[];
+  currentPage: number;
+  totalPages: number;
+  prevUrl?: string;
+  nextUrl?: string;
+  emptyTitle?: string;
+  emptyHint?: string;
+}
+
+const { articles, currentPage, totalPages, prevUrl, nextUrl, emptyTitle, emptyHint } = Astro.props;
+---
+
+<PostList articles={articles} emptyTitle={emptyTitle} emptyHint={emptyHint} />
+<Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  prevUrl={prevUrl}
+  nextUrl={nextUrl}
+  archiveHref="/archive/"
+/>

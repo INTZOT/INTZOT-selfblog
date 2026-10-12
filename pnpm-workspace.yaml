@@ -1,0 +1,13 @@
+# pnpm 10+ 把部分配置从 .npmrc 挪到了这里，nodeLinker 就是其中一个。
+#
+# 为什么必须扁平布局：
+# sharp 声明了可选的 peer 依赖 @types/node，pnpm 因此把它的实际目录建成
+#   .pnpm/sharp@0.35.5_@types+node@24.19.2/node_modules/sharp
+# 但顶层软链写成了
+#   node_modules/sharp -> .pnpm/sharp@0.35.5/node_modules/sharp
+# 少了后缀，软链是断的。后果是 Astro 报 MissingSharp、图像优化整体失效，
+# 而且 astro build 会以退出码 1 结束——但它前面已经打印过 Complete，
+# 看起来像是成功的（见 docs/PLANNING.md §12.7）。
+#
+# 本项目是应用而不是要发布的库，扁平布局没有副作用，CI 上也更稳。
+nodeLinker: hoisted

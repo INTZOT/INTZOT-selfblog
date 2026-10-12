@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { sortByDate } from '../../utils/articles';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles', ({ data }) => !data.draft);
+  const tags = new Set<string>();
+  for (const article of all) {
+    for (const tag of article.data.tags) tags.add(tag);
+  }
+  return [...tags].map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      articles: sortByDate(all.filter((a) => a.data.tags.includes(tag))),
+    },
+  }));
+}
+
+const { tag, articles } = Astro.props;
+---
+
+<Base title={'#' + tag} description={'标签 #' + tag + ' 下的全部文章。'}>
+  <div class="masthead">
+    <h1><span class="hash">#</span>{tag}</h1>
+    <p class="masthead__sub">
+      {articles.length} 篇。<a href="/tags/" style="color:var(--accent)">← 全部标签</a>
+    </p>
+    <div class="masthead__rule"></div>
+  </div>
+
+  <PostList articles={articles} emptyTitle="这个标签下还没有文章。" />
+</Base>

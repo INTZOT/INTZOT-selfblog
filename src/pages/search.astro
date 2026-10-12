@@ -1,0 +1,128 @@
+---
+import Base from '../layouts/Base.astro';
+import { getPublished } from '../utils/articles';
+
+const total = (await getPublished()).length;
+---
+
+<Base title="搜索" description="在全部文章里查找。">
+  <div class="masthead">
+    <h1>搜索</h1>
+    <p class="masthead__sub">在全部 {total} 篇文章里查找。</p>
+
+    <form class="search-form" id="search-form" role="search" action="/search/" method="get">
+      <input
+        id="q"
+        name="q"
+        type="search"
+        placeholder="输入关键词…"
+        aria-label="搜索关键词"
+        autocomplete="off"
+      />
+      <button type="submit">搜索</button>
+    </form>
+  </div>
+
+  <p class="search-status" id="search-status" role="status" aria-live="polite"></p>
+  <div id="search-results"></div>
+
+  <noscript>
+    <p class="nojs-note">
+      搜索需要 JavaScript——索引是构建时生成的静态文件，没有它查不了。<br />
+      文章本身不受影响：<a href="/archive/">按时间浏览</a>或<a href="/tags/">按标签浏览</a>都能用。
+    </p>
+  </noscript>
+
+  <script>
+    // §14.4：索引只在进入搜索页时才加载，不拖慢文章页
+    const form = document.getElementById('search-form') as HTMLFormElement | null;
+    const input = document.getElementById('q') as HTMLInputElement | null;
+    const statusEl = document.getElementById('search-status');
+    const resultsEl = document.getElementById('search-results');
+
+    type PagefindResult = {
+      data: () => Promise<{ url: string; excerpt: string; meta?: { title?: string } }>;
+    };
+    type Pagefind = {
+      options: (o: Record<string, unknown>) => Promise<void>;
+      search: (q: string) => Promise<{ results: PagefindResult[] }>;
+    };
+
+    let pending: Promise<Pagefind | null> | null = null;
+
+    function loadIndex(): Promise<Pagefind | null> {
+      if (!pending) {
+        // 用变量而不是字面量：索引是构建产物，源码阶段并不存在，
+        // 写成字面量会让 TypeScript 去解析一个还没生成的模块。
+        const indexPath = '/pagefind/pagefind.js';
+        pending = import(/* @vite-ignore */ indexPath)
+          .then(async (pf: Pagefind) => {
+            await pf.options({ excerptLength: 30 });
+            return pf;
+          })
+          .catch(() => null);
+      }
+      return pending;
+    }
+
+    function escapeHtml(s: string): string {
+      return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+    }
+
+    async function run(term: string) {
+      if (!statusEl || !resultsEl) return;
+      if (!term) {
+        statusEl.textContent = '';
+        resultsEl.innerHTML = '';
+        return;
+      }
+
+      statusEl.textContent = '正在查找…';
+      resultsEl.innerHTML = '';
+
+      const pf = await loadIndex();
+      if (!pf) {
+        // 开发模式下索引不存在，说清楚而不是一直转圈
+        statusEl.textContent = '';
+        resultsEl.innerHTML =
+          '<p class="nojs-note">搜索索引还没有生成——它只在构建产物里存在。' +
+          '开发模式下用不了，构建之后就好了。</p>';
+        return;
+      }
+
+      const { results } = await pf.search(term);
+      if (results.length === 0) {
+        statusEl.textContent = '没有找到「' + term + '」相关的文章。';
+        return;
+      }
+
+      statusEl.textContent = '找到 ' + results.length + ' 条结果';
+      const items = await Promise.all(results.slice(0, 20).map((r) => r.data()));
+      resultsEl.innerHTML = items
+        .map(
+          (item) =>
+            '<a class="hit" href="' + item.url + '">' +
+            '<h3>' + escapeHtml(item.meta?.title ?? item.url) + '</h3>' +
+            '<p>' + item.excerpt + '</p>' +
+            '<span class="path">' + item.url + '</span>' +
+            '</a>',
+        )
+        .join('');
+    }
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const term = (input?.value ?? '').trim();
+      const url = term ? '/search/?q=' + encodeURIComponent(term) : '/search/';
+      history.replaceState(null, '', url);
+      void run(term);
+    });
+
+    // 带 ?q= 进来时直接出结果，这样搜索结果是可分享、可后退的
+    const initial = new URLSearchParams(location.search).get('q');
+    if (initial && input) {
+      input.value = initial;
+      void run(initial);
+    }
+  </script>
+</Base>
