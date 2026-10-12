@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>样例 C1 · 杂志排版（图片主导）</title>
+<style>
+:root{
+  --paper:#faf8f5; --ink:#1a1a1a; --ink2:#5c5751; --ink3:#948c83; --rule:#e4ded4; --accent:#b3391f;
+  --fd:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","SimSun",Georgia,"Times New Roman",serif;
+  --fb:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#161519; --ink:#ece7e0; --ink2:#a9a29a; --ink3:#7b746c; --rule:#2f2d34; --accent:#e0704c;
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--fb);line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--rule)}
+.hd{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;padding:22px 0}
+.brand{font-family:var(--fd);font-size:21px;font-weight:700;letter-spacing:.08em}
+nav{display:flex;gap:22px;font-size:13.5px;color:var(--ink2)}
+nav a:hover{color:var(--accent)}
+.ph{position:relative;overflow:hidden;border-radius:2px;background:linear-gradient(135deg,#c9a227,#8c5a2b 55%,#3f2a1d)}
+.ph::after{content:attr(data-label);position:absolute;left:14px;bottom:12px;color:rgba(255,255,255,.72);font-size:11.5px;letter-spacing:.12em}
+footer{border-top:1px solid var(--rule);margin-top:72px}
+.ft{padding:28px 0;color:var(--ink3);font-size:12.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hero{padding:54px 0 8px}
+.hero .ph{aspect-ratio:16/9}
+.kicker{margin-top:30px;font-size:11.5px;letter-spacing:.24em;color:var(--accent);font-weight:700}
+.hero h1{font-family:var(--fd);font-size:clamp(29px,4.5vw,52px);line-height:1.16;margin:12px 0 0;letter-spacing:-.01em;font-weight:700}
+.hero .lead{color:var(--ink2);font-size:16.5px;max-width:60ch;margin:16px 0 0}
+.meta{margin-top:16px;color:var(--ink3);font-size:12.5px;letter-spacing:.05em}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px 32px;padding:64px 0 0}
+.card .ph{aspect-ratio:4/3;margin-bottom:18px}
+.tag{font-size:11px;letter-spacing:.18em;color:var(--accent);font-weight:700}
+.card h2{font-family:var(--fd);font-size:21px;line-height:1.4;margin:9px 0 0;font-weight:700}
+.card p{color:var(--ink2);font-size:14px;margin:9px 0 0;line-height:1.7}
+.card .meta{margin-top:11px}
+.sect{display:flex;align-items:baseline;gap:16px;margin:72px 0 0;border-top:1px solid var(--rule);padding-top:20px}
+.sect h3{font-family:var(--fd);font-size:15px;letter-spacing:.16em;margin:0;font-weight:700}
+.sect span{color:var(--ink3);font-size:12.5px}
+@media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr);gap:36px 24px}}
+@media(max-width:600px){
+  .wrap{padding:0 18px}
+  .grid{grid-template-columns:1fr;gap:34px}
+  .hero{padding:32px 0 0}
+  .hero h1{font-size:27px}
+  .hero .lead{font-size:15.5px}
+  nav{gap:16px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hd">
+    <a class="brand" href="#">INTZOT</a>
+    <nav><a href="#">posts</a><a href="#">notes</a><a href="#">series</a><a href="#">archive</a><a href="#">tags</a><a href="#">about</a></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="hero">
+    <div class="ph" data-label="封面图 · 16:9"></div>
+    <div class="kicker">FEATURED</div>
+    <h1>用 Rust 重写 Bedrock 地图渲染器的三个月</h1>
+    <p class="lead">从 C++ 迁移到 Rust 之后，崩溃率降到了零，但真正的收获是那些在迁移过程中才暴露出来的设计问题——它们和语言无关。</p>
+    <div class="meta">2026-10-12 · 技术 · 18 分钟</div>
+  </article>
+
+  <section>
+    <div class="sect"><h3>最新</h3><span>共 24 篇</span></div>
+    <div class="grid">
+      <article class="card">
+        <div class="ph" data-label="封面图 · 4:3"></div>
+        <div class="tag">技术</div>
+        <h2>从零实现一个 .mcstructure 解析器</h2>
+        <p>二进制格式、端序、变长整数，以及我一开始就搞错的三处地方。</p>
+        <div class="meta">2026-10-08 · 12 分钟</div>
+      </article>
+      <article class="card">
+        <div class="ph" data-label="封面图 · 4:3"></div>
+        <div class="tag">随笔</div>
+        <h2>十月，和一些没写完的东西</h2>
+        <p>搬家那天下了雨。纸箱堆在客厅中间，我坐在地上拆一个标着「杂物」的箱子。</p>
+        <div class="meta">2026-10-06 · 3 分钟</div>
+      </article>
+      <article class="card">
+        <div class="ph" data-label="封面图 · 4:3"></div>
+        <div class="tag">技术</div>
+        <h2>为什么我放弃了 ORM</h2>
+        <p>不是 ORM 不好，是我的查询里有一半它表达不出来，另一半它表达得比 SQL 还长。</p>
+        <div class="meta">2026-10-02 · 9 分钟</div>
+      </article>
+      <article class="card">
+        <div class="ph" data-label="封面图 · 4:3"></div>
+        <div class="tag">随笔</div>
+        <h2>关于咖啡萃取的三个误解</h2>
+        <p>水温、研磨度、时间——它们不是三个独立的旋钮，而是一个跷跷板。</p>
+        <div class="meta">2026-09-28 · 5 分钟</div>
+      </article>
+      <article class="card">
+        <div class="ph" data-label="封面图 · 4:3"></div>
+        <div class="tag">技术</div>
+        <h2>四十七个灯具背后的插件架构</h2>
+        <p>当一个玩法包需要支持几十种互不相关的方块行为时，继承树会先于代码崩溃。</p>
+        <div class="meta">2026-09-21 · 14 分钟</div>
+      </article>
+      <article class="card">
+        <div class="ph" data-label="封面图 · 4:3"></div>
+        <div class="tag">随笔</div>
+        <h2>搬家记</h2>
+        <p>第三次搬家之后我意识到，我留着的很多东西，留着只是因为没扔过。</p>
+        <div class="meta">2026-09-15 · 4 分钟</div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap ft"><span>© 2026 intzot</span><span>RSS · GitHub · Email</span></div></footer>
+</body>
+</html>

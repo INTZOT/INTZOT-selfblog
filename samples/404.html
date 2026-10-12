@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>404 · INTZOT</title>
+<style>
+:root{
+  --paper:#faf8f5; --ink:#1a1a1a; --ink2:#5c5751; --ink3:#948c83; --rule:#e4ded4; --accent:#b3391f;
+  --fd:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","SimSun",Georgia,"Times New Roman",serif;
+  --fb:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#161519; --ink:#ece7e0; --ink2:#a9a29a; --ink3:#7b746c; --rule:#2f2d34; --accent:#e0704c;
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--fb);line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--rule)}
+.hd{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;padding:22px 0}
+.brand{font-family:var(--fd);font-size:21px;font-weight:700;letter-spacing:.08em}
+nav{display:flex;gap:22px;font-size:13.5px;color:var(--ink2)}
+nav a:hover{color:var(--accent)}
+.ph{position:relative;overflow:hidden;border-radius:2px;background:linear-gradient(135deg,#c9a227,#8c5a2b 55%,#3f2a1d)}
+.ph--b{background:linear-gradient(135deg,#5b7c99,#33506b 55%,#1d2f3f)}
+.ph--c{background:linear-gradient(135deg,#a4574a,#6f3630 55%,#3d1e1a)}
+.ph--d{background:linear-gradient(135deg,#7d8b5a,#4e5836 55%,#2b301d)}
+.ph::after{content:attr(data-label);position:absolute;left:14px;bottom:12px;color:rgba(255,255,255,.72);font-size:11.5px;letter-spacing:.12em}
+footer{border-top:1px solid var(--rule);margin-top:72px}
+.ft{padding:28px 0;color:var(--ink3);font-size:12.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+/* 页面头部：沿用定稿的报头语言 */
+.page-head{padding:72px 0 0}
+.page-head h1{font-family:var(--fd);font-size:clamp(38px,6.4vw,78px);line-height:1.02;margin:0;letter-spacing:-.02em;font-weight:700}
+.page-head h1 .hash{color:var(--ink3);font-weight:400}
+.page-head .sub{color:var(--ink2);font-size:16px;margin:18px 0 0;max-width:54ch}
+.page-head .rule{margin:40px 0 0;height:1px;background:var(--ink);opacity:.85}
+/* 文章列表：沿用 c4 定稿的形态 */
+.item{display:grid;grid-template-columns:132px 1fr 152px;gap:0 32px;padding:28px 0;border-bottom:1px solid var(--rule);align-items:start}
+.item .date{color:var(--ink3);font-size:12.5px;letter-spacing:.1em;padding-top:6px;font-variant-numeric:tabular-nums}
+.item h3{font-family:var(--fd);font-size:clamp(19px,2.1vw,25px);line-height:1.35;margin:0;font-weight:700}
+.item p{color:var(--ink2);font-size:14.5px;margin:9px 0 0;max-width:64ch}
+.item .tag{display:inline-block;margin-top:12px;font-size:10.5px;letter-spacing:.2em;color:var(--ink3);font-weight:700}
+.item .thumb{aspect-ratio:4/3;margin-top:4px}
+.item:hover h3{color:var(--accent)}
+.noimg{padding-top:6px;font-size:11px;letter-spacing:.1em;color:var(--rule);text-align:right}
+@media(max-width:760px){
+  .item{grid-template-columns:1fr 104px;gap:0 18px}
+  .item .date{grid-column:1/-1;padding:0 0 10px}
+  .noimg{display:none}
+}
+@media(max-width:640px){
+  .wrap{padding:0 18px}
+  .page-head{padding:38px 0 0}
+  nav{gap:16px;font-size:13px}
+}
+.nf{padding:96px 0 0}
+.nf__code{font-family:var(--fd);font-size:clamp(90px,17vw,190px);line-height:.86;margin:0;letter-spacing:-.04em;font-weight:700}
+.nf h1{font-family:var(--fd);font-size:clamp(22px,2.8vw,30px);margin:26px 0 0;font-weight:700}
+.nf p{color:var(--ink2);font-size:16px;margin:16px 0 0;max-width:52ch}
+.navlist{list-style:none;margin:56px 0 0;padding:0;border-top:1px solid var(--ink)}
+.navlist li{border-bottom:1px solid var(--rule)}
+.navlist a{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;padding:16px 0}
+.navlist .n{font-family:var(--fd);font-size:20px;font-weight:700}
+.navlist .p{color:var(--ink3);font-size:12.5px;letter-spacing:.06em}
+.navlist a:hover .n{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="wrap hd"><a class="brand" href="c4-list-thumbs.html">INTZOT</a>
+<nav><a href="c4-list-thumbs.html">posts</a><a href="#">notes</a><a href="#">series</a><a href="archive.html">archive</a><a href="tags.html">tags</a><a href="about.html">about</a></nav></div></header>
+<main class="wrap">
+
+<div class="nf">
+  <p class="nf__code">404</p>
+  <h1>这个地址上没有东西</h1>
+  <p>可能是链接拼错了，也可能是我把某篇文章移走或删掉了。<br>下面这些地方也许能帮你找到它。</p>
+</div>
+<ul class="navlist">
+  <li><a href="c4-list-thumbs.html"><span class="n">posts</span><span class="p">/posts/</span></a></li>
+  <li><a href="archive.html"><span class="n">archive</span><span class="p">/archive/</span></a></li>
+  <li><a href="tags.html"><span class="n">tags</span><span class="p">/tags/</span></a></li>
+  <li><a href="search.html"><span class="n">search</span><span class="p">/search/</span></a></li>
+  <li><a href="about.html"><span class="n">about</span><span class="p">/about/</span></a></li>
+</ul>
+
+</main>
+<footer><div class="wrap ft"><span>© 2026 intzot</span><span>RSS · GitHub · Email</span></div></footer>
+</body>
+</html>

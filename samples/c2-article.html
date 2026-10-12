@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>样例 C2 · 文章详情</title>
+<style>
+:root{
+  --paper:#faf8f5; --ink:#1a1a1a; --ink2:#5c5751; --ink3:#948c83; --rule:#e4ded4; --accent:#b3391f;
+  --fd:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","SimSun",Georgia,"Times New Roman",serif;
+  --fb:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --fm:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#161519; --ink:#ece7e0; --ink2:#a9a29a; --ink3:#7b746c; --rule:#2f2d34; --accent:#e0704c;
+}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--fb);line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+header{border-bottom:1px solid var(--rule)}
+.hd{display:flex;justify-content:space-between;align-items:baseline;gap:24px;flex-wrap:wrap;padding:22px 0}
+.brand{font-family:var(--fd);font-size:21px;font-weight:700;letter-spacing:.08em}
+nav{display:flex;gap:22px;font-size:13.5px;color:var(--ink2)}
+nav a:hover{color:var(--accent)}
+.ph{position:relative;overflow:hidden;border-radius:2px;background:linear-gradient(135deg,#c9a227,#8c5a2b 55%,#3f2a1d)}
+.ph::after{content:attr(data-label);position:absolute;left:14px;bottom:12px;color:rgba(255,255,255,.72);font-size:11.5px;letter-spacing:.12em}
+footer{border-top:1px solid var(--rule);margin-top:72px}
+.ft{padding:28px 0;color:var(--ink3);font-size:12.5px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+/* 正文通用 */
+.body h2{font-family:var(--fd);font-size:1.5em;line-height:1.35;margin:2.2em 0 .7em;font-weight:700}
+.body h3{font-family:var(--fd);font-size:1.18em;margin:1.8em 0 .5em;font-weight:700}
+.body p{margin:0 0 1.35em}
+.body ul,.body ol{padding-left:1.4em;margin:0 0 1.35em}
+.body li+li{margin-top:.4em}
+.body a{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.body code{font-family:var(--fm);font-size:.88em;background:rgba(0,0,0,.055);padding:.15em .4em;border-radius:3px}
+@media (prefers-color-scheme:dark){.body code{background:rgba(255,255,255,.09)}}
+.body pre{font-family:var(--fm);font-size:13.5px;line-height:1.7;background:rgba(0,0,0,.045);border:1px solid var(--rule);border-radius:3px;padding:18px 20px;overflow:auto;margin:0 0 1.6em}
+@media (prefers-color-scheme:dark){.body pre{background:rgba(255,255,255,.05)}}
+.body pre code{background:none;padding:0;font-size:100%}
+.body blockquote{margin:0 0 1.6em;padding-left:1.2em;border-left:3px solid var(--accent);color:var(--ink2);font-family:var(--fd);font-size:1.08em}
+.body hr{border:0;border-top:1px solid var(--rule);margin:2.6em 0}
+.head{padding:64px 0 0;display:grid;grid-template-columns:132px 1fr;gap:0 32px;align-items:start}
+.head .date{color:var(--ink3);font-size:12.5px;letter-spacing:.1em;padding-top:16px;font-variant-numeric:tabular-nums}
+.head .kicker{font-size:11px;letter-spacing:.22em;color:var(--accent);font-weight:700}
+.head h1{font-family:var(--fd);font-size:clamp(30px,4.4vw,50px);line-height:1.16;margin:12px 0 0;letter-spacing:-.01em;font-weight:700}
+.head .lead{color:var(--ink2);font-size:17px;margin:18px 0 0;max-width:56ch}
+.head .rule{grid-column:2;height:1px;background:var(--ink);opacity:.85;margin:34px 0 0}
+.body{max-width:660px;margin:44px 0 0 auto;padding-right:0;font-size:17.5px;line-height:1.9}
+.body p:first-child::first-letter{font-family:var(--fd);font-size:3.1em;line-height:.9;float:left;padding:.06em .12em 0 0;font-weight:700}
+.body figure{margin:0 0 1.8em}
+.body figcaption{margin-top:10px;color:var(--ink3);font-size:13px}
+@media(max-width:640px){
+  .wrap{padding:0 18px}
+  .head{grid-template-columns:1fr;padding:32px 0 0}
+  .head .date{padding:0 0 12px}
+  .head h1{font-size:27px}
+  .head .lead{font-size:16px}
+  .head .rule{grid-column:1}
+  .body{font-size:16.5px;line-height:1.82;margin-top:30px}
+  .body p:first-child::first-letter{font-size:2.6em}
+  nav{gap:16px;font-size:13px}
+  .body pre{font-size:12.5px;padding:14px}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap hd"><a class="brand" href="c2-type-led.html">INTZOT</a>
+<nav><a href="c2-type-led.html">posts</a><a href="#">notes</a><a href="#">series</a><a href="#">archive</a><a href="#">tags</a><a href="#">about</a></nav></div></header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="date">2026-10-12</div>
+    <div>
+      <div class="kicker">技术 · 18 分钟</div>
+      <h1>用 Rust 重写 Bedrock 地图渲染器的三个月</h1>
+      <p class="lead">从 C++ 迁移到 Rust 之后，崩溃率降到了零，但真正的收获是那些在迁移过程中才暴露出来的设计问题——它们和语言无关。</p>
+    </div>
+    <div class="rule"></div>
+  </div>
+
+  <article class="body">
+    <p>这个渲染器原本是 C++ 写的，三千多行，跑在服务端批量出图。它不算慢，但每隔几周就会因为某个野指针在凌晨崩一次，而我只能在第二天早上从 core dump 里倒推发生了什么。</p>
+    <p>把所有权交给编译器之后，我以为会轻松一些。确实轻松了，但真正花掉三个月的是另一件事。</p>
+
+    <h2>一、崩溃消失了，但问题没有</h2>
+    <p>Rust 帮我消灭的是内存错误，不是设计错误。迁移到第二周我就遇到了一个典型的例子：地图分块（chunk）的加载和卸载是两套独立的逻辑，各自维护了一份引用计数。C++ 时代这个设计靠约定活着，Rust 则直接拒绝编译。</p>
+    <blockquote>编译器不能告诉你该怎么做，它只能告诉你现在这样做不通。剩下的是你自己的事。</blockquote>
+    <p>最后的解法是把两个计数器合并成一个状态机，状态只有四种。改动本身只有几十行，但想明白它花了我四天。</p>
+
+    <h2>二、性能反而是最简单的一环</h2>
+    <p>出图是纯计算，没有 IO 等待，所以优化路径很直接：找到热点，减少分配，把递归改成迭代。</p>
+    <pre><code>pub fn render_region(&amp;self, region: &amp;Region) -&gt; Tile {
+    let mut tile = Tile::new(region.width, region.height);
+    for chunk in region.chunks() {
+        // 分块之间没有依赖，可以并行
+        tile.blit(chunk.rasterize());
+    }
+    tile
+}</code></pre>
+    <p>整个渲染时间从 4.2 秒降到 0.8 秒，其中大约一半来自把逐像素写入改成按行写入——这个改动在 C++ 版本里也能做，只是当时没人愿意碰那段代码。</p>
+
+    <h2>三、代价</h2>
+    <ul>
+      <li>编译时间从 6 秒涨到 40 秒，改一行要等一次链接</li>
+      <li>团队里没人写过 Rust，前两周基本在查文档</li>
+      <li>某些地方为了绕过借用检查写了不必要的克隆，性能其实还有余量</li>
+    </ul>
+    <p>但比起「凌晨三点被叫起来看 core dump」，这些都还算可以接受。</p>
+  </article>
+</main>
+
+<footer><div class="wrap ft"><span>© 2026 intzot</span><span>RSS · GitHub · Email</span></div></footer>
+</body>
+</html>
