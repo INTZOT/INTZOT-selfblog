@@ -11,9 +11,6 @@ import tagList from '../content/tags.json';
  *
  * §13.1（2026-10-12 修订）：链接前缀统一为 /articles/，
  * **类型（技术 / 随笔）不再决定链接**，它就是一个普通标签。
- *
- * 这么改的直接好处：原来「发布后不能改类型」那条约束（因为类型决定前缀）
- * 随之消失——类型现在可以随时改，不会动到链接。
  */
 const articleSchema = ({ image }: SchemaContext) =>
   z.object({
@@ -53,4 +50,15 @@ const articles = defineCollection({
   schema: articleSchema,
 });
 
-export const collections = { articles };
+/**
+ * 单页内容。目前只有「关于」——它的正文是可编辑的 Markdown，
+ * 读者看到的那些文字不该埋在模板里。
+ */
+const pages = defineCollection({
+  loader: glob({ base: './content', pattern: '*.md' }),
+  schema: z.object({
+    title: z.string().default('关于'),
+  }),
+});
+
+export const collections = { articles, pages };

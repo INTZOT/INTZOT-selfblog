@@ -434,8 +434,8 @@ button {
   line-height: var(--lh-prose);
 }
 
-/* 首字下沉（§10.7） */
-.prose > p:first-of-type::first-letter {
+/* 首字下沉（§10.7）。显式开启：关于页也用 .prose，但不要下沉 */
+.prose--dropcap > p:first-of-type::first-letter {
   float: left;
   padding: 0.06em 0.12em 0 0;
   font-family: var(--font-display);
@@ -757,40 +757,53 @@ button {
 /* ============================================================
    版权页（关于）
    ============================================================ */
-.colophon {
+.about {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: 0 64px;
   align-items: start;
   margin-top: 48px;
 }
-.colophon__statement {
+
+/* 头像：圆形，随页面节奏留白 */
+.about__avatar {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 30px;
+}
+
+.about__prose {
+  max-width: 58ch;
+  margin: 0;
+  font-size: 16.5px;
+}
+/* 第一段用衬线放大，当作这一页的引子 */
+.about__prose > p:first-of-type {
   font-family: var(--font-display);
-  font-size: clamp(19px, 2.2vw, 24px);
-  line-height: 1.6;
+  font-size: clamp(19px, 2.2vw, 23px);
+  line-height: 1.65;
 }
-.colophon__statement + .colophon__statement {
-  margin-top: 24px;
-  color: var(--ink-muted);
-  font-size: clamp(16px, 1.8vw, 19px);
-}
-.colophon dl {
+
+.about__facts {
   display: grid;
   grid-template-columns: 96px 1fr;
+  align-content: start;
 }
-.colophon dt {
+.about__facts dt {
   padding: 11px 0;
   border-bottom: 1px solid var(--rule);
   color: var(--ink-subtle);
   font-size: 12.5px;
   letter-spacing: 0.1em;
 }
-.colophon dd {
+.about__facts dd {
   padding: 11px 0;
   border-bottom: 1px solid var(--rule);
   font-size: 14.5px;
 }
-.colophon dd a {
+.about__facts dd a {
   color: var(--accent);
 }
 
@@ -856,7 +869,7 @@ button {
     grid-template-columns: repeat(2, 1fr);
     gap: 0 32px;
   }
-  .colophon {
+  .about {
     grid-template-columns: 1fr;
     gap: 44px;
   }
