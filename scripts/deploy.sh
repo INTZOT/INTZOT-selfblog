@@ -87,4 +87,4 @@ printf '  ✓ 文件数：%s\n' "\$(find -L current -type f | wc -l)"
 printf '  ✓ 保留版本数：%s\n' "\$(ls -1d releases/*/ | wc -l)"
 MARK
 
-say "完成。注意：在 caddy 里加上站点块之前，这个目录还不会被外部访问到。"
+say "完成 → https://intzot.asia"
