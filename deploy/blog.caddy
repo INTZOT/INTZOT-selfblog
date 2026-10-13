@@ -1,0 +1,50 @@
+# ===============================================================
+# intzot.asia —— 博客
+#
+# 这个文件由博客项目自己维护（仓库里的 deploy/blog.caddy）。
+# 它通过 nefu 的 Caddyfile 里这一行被引入：
+#
+#     import /srv/blog/caddy/*.caddy
+#
+# 之所以用 import 而不是直接写进那个 Caddyfile：
+# 那个项目由部署脚本/其他人维护，会重新生成 Caddyfile。
+# 之前直接追加的 40 行就是这样被覆盖掉的，博客因此掉线过一次。
+# 现在只需要保住那一行 import。
+#
+# 产物由 scripts/deploy.sh 发布到 /srv/intzot.asia/releases/<时间戳>/，
+# current 是指向当前版本的软链。
+#
+# 证书（2026-10-12 实测）：用 http-01 签下来的。
+#   国内访问 http://intzot.asia 会被阿里云以「未备案」拦截（403），
+#   但**拦截只作用于国内来源**——Let's Encrypt 的校验服务器在国外，
+#   请求直接落到本机，所以 http-01 能通过，续期也没问题。
+#   **不要为了「先让国内 HTTP 能通」改这里，那解决不了备案，反而会弄坏签发。**
+# ===============================================================
+
+intzot.asia {
+	encode zstd gzip
+	root * /srv/blog/current
+	file_server
+
+	# 目录式链接：/articles/foo/ 命中 /articles/foo/index.html
+	try_files {path} {path}/ {path}/index.html
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+
+	# 带指纹的静态资源长期缓存
+	@assets path /_astro/* /pagefind/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	# HTML 不缓存，否则新文章发不出去
+	@html path *.html /
+	header @html Cache-Control "public, max-age=0, must-revalidate"
+
+	log {
+		output stdout
+		format console
+	}
+}

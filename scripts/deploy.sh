@@ -87,4 +87,28 @@ printf '  ✓ 文件数：%s\n' "\$(find -L current -type f | wc -l)"
 printf '  ✓ 保留版本数：%s\n' "\$(ls -1d releases/*/ | wc -l)"
 MARK
 
+# ---------- 6. 同步 caddy 站点配置 ----------
+# deploy/blog.caddy 是唯一真源。它在服务器上通过 nefu 的 Caddyfile 里
+# 一行 import 被引入（原因见该文件顶部：直接往那个文件里写会被覆盖，
+# 博客就这样掉线过一次）。
+say "同步 caddy 站点配置"
+CADDY_DEST=/srv/intzot.asia/caddy/blog.caddy
+
+remote <<MARK
+set -e
+mkdir -p /srv/intzot.asia/caddy
+MARK
+
+before=$(ssh -i "$SSH_KEY" -o BatchMode=yes "$REMOTE" "md5sum $CADDY_DEST 2>/dev/null | cut -d' ' -f1" || true)
+rsync -az -e "ssh -i $SSH_KEY -o BatchMode=yes" deploy/blog.caddy "$REMOTE:$CADDY_DEST"
+after=$(ssh -i "$SSH_KEY" -o BatchMode=yes "$REMOTE" "md5sum $CADDY_DEST 2>/dev/null | cut -d' ' -f1" || true)
+
+if [ "$before" = "$after" ]; then
+  say "站点配置未变化"
+else
+  say "站点配置有变化，已就位——需要热加载才生效"
+  printf '\n  热加载命令（需要 sudo，所以脚本不代劳）：\n'
+  printf '    ssh %s \"sudo docker exec nefu-pa-web-caddy-1 caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile\"\n\n' "$REMOTE"
+fi
+
 say "完成 → https://intzot.asia"
