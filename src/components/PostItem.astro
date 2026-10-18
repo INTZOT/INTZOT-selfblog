@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { excerptOf, formatDate, readingMinutes, urlOf, type Article } from '../utils/articles';
+import { excerptOf, readingMinutes, urlOf, type Article } from '../utils/articles';
 
 interface Props {
   article: Article;
@@ -9,36 +9,42 @@ interface Props {
 const { article } = Astro.props;
 const cover = article.data.cover;
 const tags = article.data.tags;
+const date = article.data.date;
+const day = String(date.getDate()).padStart(2, '0');
+const month = String(date.getMonth() + 1).padStart(2, '0') + ' 月';
 ---
 
-<li>
+<li class="reveal">
   <a class="post-item" href={urlOf(article)}>
-    <time class="post-item__date" datetime={article.data.date.toISOString()}>
-      {formatDate(article.data.date)}
-    </time>
-    <div>
-      <h3 class="post-item__title">{article.data.title}</h3>
-      <p class="post-item__desc">{excerptOf(article)}</p>
-      <span class="post-item__meta">
-        {tags.map((tag) => '#' + tag).join(' ')}
-        {tags.length > 0 && ' · '}
-        {readingMinutes(article.body)} 分钟
-      </span>
+    <div class="post-item__grid">
+      <time class="post-item__date" datetime={date.toISOString()}>
+        <span class="post-item__d">{day}</span>
+        <span class="post-item__m">{month}</span>
+      </time>
+
+      <div>
+        <h3 class="post-item__title">{article.data.title}</h3>
+        <p class="post-item__desc">{excerptOf(article)}</p>
+        <div class="post-item__meta">
+          {tags.map((tag) => '#' + tag).join(' ')}
+          {tags.length > 0 && ' · '}
+          {readingMinutes(article.body)} 分钟
+        </div>
+      </div>
+
+      {
+        cover && (
+          <Image
+            class="post-item__thumb"
+            src={cover}
+            alt=""
+            width={336}
+            height={252}
+            loading="lazy"
+            decoding="async"
+          />
+        )
+      }
     </div>
-    {
-      cover ? (
-        <Image
-          class="post-item__thumb"
-          src={cover}
-          alt=""
-          width={384}
-          height={288}
-          loading="lazy"
-          decoding="async"
-        />
-      ) : (
-        <span class="post-item__thumb--none" aria-hidden="true">无配图</span>
-      )
-    }
   </a>
 </li>

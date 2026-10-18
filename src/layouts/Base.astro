@@ -7,11 +7,15 @@ import SiteFooter from '../components/SiteFooter.astro';
 interface Props {
   title?: string;
   description?: string;
-  /** 文章页传 true：正文成为搜索索引范围（§14.4 只索引文章） */
+  /** 文章页：正文成为搜索索引范围，并显示阅读进度条 */
   article?: boolean;
+  /** 页头叠加在整屏头条上 */
+  overlay?: boolean;
+  /** main 不加 .wrap —— 整屏头条需要通栏 */
+  full?: boolean;
 }
 
-const { title, description, article = false } = Astro.props;
+const { title, description, article = false, overlay = false, full = false } = Astro.props;
 
 const path = Astro.url.pathname;
 const canonical = new URL(path, SITE.url).href;
@@ -42,13 +46,12 @@ const pageTitle = title ? title + ' · ' + SITE.title : SITE.title + ' · ' + SI
   </head>
 
   <body>
+    {article && <div class="progress"></div>}
     <a class="skip-link" href="#main">跳到正文</a>
-    <SiteHeader path={path} />
+    <SiteHeader path={path} overlay={overlay} />
 
     <main id="main">
-      <div class="wrap">
-        <slot />
-      </div>
+      {full ? <slot /> : <div class="wrap"><slot /></div>}
     </main>
 
     <SiteFooter />

@@ -1,23 +1,35 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ListView from '../../components/ListView.astro';
-import { getPublished, pageUrl } from '../../utils/articles';
-import { PAGE_SIZE } from '../../consts';
+import { KIND_TAGS, PAGE_SIZE } from '../../consts';
+import { getPublished, pageUrl, tagUrl } from '../../utils/articles';
 
 const all = await getPublished();
 const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+
+const countOf = (tag: string) => all.filter((a) => a.data.tags.includes(tag)).length;
 ---
 
 <Base title="文章">
   <div class="masthead">
+    <div class="masthead__kicker"><b>全部</b><span>{all.length} 篇 · 按时间倒序</span></div>
     <h1>文章</h1>
-    <p class="masthead__sub">
-      全部 {all.length} 篇，按时间倒序。想看更紧凑的列表就去<a
-        href="/archive/"
-        style="color:var(--accent)">归档</a
-      >。
-    </p>
-    <div class="masthead__rule"></div>
+  </div>
+
+  <div class="chips">
+    <a class="chip chip--on" href="/articles/">全部 {all.length}</a>
+    {
+      KIND_TAGS.map((tag) => (
+        <a class="chip" href={tagUrl(tag)}>
+          {tag} {countOf(tag)}
+        </a>
+      ))
+    }
+  </div>
+
+  <div class="section-head">
+    <h2>最近</h2>
+    <a class="count count--muted" href="/archive/">按年查看 →</a>
   </div>
 
   <ListView

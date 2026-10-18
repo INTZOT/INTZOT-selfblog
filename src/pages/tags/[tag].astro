@@ -24,12 +24,17 @@ const { tag, articles } = Astro.props;
 
 <Base title={'#' + tag} description={'标签 #' + tag + ' 下的全部文章。'}>
   <div class="masthead">
+    <div class="masthead__kicker"><b>标签</b><span>{articles.length} 篇</span></div>
     <h1><span class="hash">#</span>{tag}</h1>
-    <p class="masthead__sub">
-      {articles.length} 篇。<a href="/tags/" style="color:var(--accent)">← 全部标签</a>
-    </p>
-    <div class="masthead__rule"></div>
   </div>
+
+  <div class="chips">
+    <a class="chip chip--on" href="/tags/">{tag}</a>
+    <a class="chip" href="/tags/">全部标签</a>
+    <a class="chip" href="/articles/">全部文章</a>
+  </div>
+
+  <div class="section-head"><h2>在这个标签下</h2></div>
 
   <PostList articles={articles} emptyTitle="这个标签下还没有文章。" />
 </Base>

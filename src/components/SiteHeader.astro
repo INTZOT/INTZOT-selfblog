@@ -1,18 +1,20 @@
 ---
-import { NAV, SITE } from '../consts';
+import { NAV } from '../consts';
 
 interface Props {
   path: string;
+  /** 叠加在整屏头条上：透明背景、白字 */
+  overlay?: boolean;
 }
 
-const { path } = Astro.props;
+const { path, overlay = false } = Astro.props;
 const isActive = (href: string) => path === href || path.startsWith(href);
 ---
 
-<header class="site-header">
+<header class={'site-header' + (overlay ? ' site-header--over' : '')}>
   <div class="wrap site-header__inner">
-    <a class="site-title" href="/">{SITE.title}</a>
-    <nav class="site-nav" aria-label="主导航">
+    <a class="brand" href="/">INTZOT</a>
+    <nav class="nav" aria-label="主导航">
       {
         NAV.map((item) => (
           <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>

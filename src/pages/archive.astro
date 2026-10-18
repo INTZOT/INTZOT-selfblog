@@ -4,8 +4,7 @@ import { formatShortDate, getPublished, urlOf } from '../utils/articles';
 
 const all = await getPublished();
 
-// §10.7：按年份分组，不放摘要与配图——归档是用来扫的。
-// 分页也取消（§13.5）：一百来行可以一次滚完，分页反而破坏「一眼看全」。
+// 按年份分组，不放摘要与配图——归档是用来扫的（§13.5 不分页）
 const byYear = new Map<string, typeof all>();
 for (const article of all) {
   const year = String(article.data.date.getFullYear());
@@ -16,10 +15,9 @@ const years = [...byYear.keys()].sort((a, b) => b.localeCompare(a));
 
 <Base title="归档">
   <div class="masthead">
+    <div class="masthead__kicker"><b>归档</b><span>{all.length} 篇</span></div>
     <h1>归档</h1>
-    <p class="masthead__sub">
-      全部 {all.length} 篇，按时间倒序。这里不放摘要和配图——归档是用来扫的，不是用来读的。
-    </p>
+    <p class="masthead__sub">按时间倒序。这里不放摘要和配图——归档是用来扫的，不是用来读的。</p>
     <div class="masthead__rule"></div>
   </div>
 

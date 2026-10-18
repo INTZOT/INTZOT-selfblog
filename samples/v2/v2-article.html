@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>杂志风 2.0 · 文章页</title><style>:root{
+  --paper:#faf8f5; --paper-deep:#f3ede3;
+  --ink:#1a1a1a; --ink-muted:#5c5751; --ink-subtle:#8b8377;
+  --rule:#e6e0d5; --rule-strong:#d2c9ba;
+  --accent:#b3391f; --accent-deep:#8c2a14;
+  --fd:"Source Han Serif SC","Noto Serif CJK SC","Songti SC","SimSun",Georgia,serif;
+  --fb:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --fm:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#16151a; --paper-deep:#1e1d24;
+  --ink:#ece7e0; --ink-muted:#a9a29a; --ink-subtle:#8a8279;
+  --rule:#2e2c34; --rule-strong:#413e49;
+  --accent:#e0704c; --accent-deep:#f0906f;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--fb);line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:1160px;margin:0 auto;padding:0 32px}
+
+.site-header{border-bottom:1px solid var(--rule)}
+.site-header__inner{display:flex;align-items:baseline;justify-content:space-between;gap:32px;padding:26px 0}
+.brand{font-family:var(--fd);font-size:19px;font-weight:700;letter-spacing:.14em}
+.nav{display:flex;gap:26px;font-size:13px;letter-spacing:.06em}
+.nav a{color:var(--ink-muted);transition:color .15s}
+.nav a:hover,.nav a[aria-current]{color:var(--accent)}
+
+.masthead{padding:60px 0 0}
+.masthead__tagline{font-family:var(--fd);font-size:clamp(20px,2.3vw,25px);margin:0;line-height:1.5}
+.masthead__stats{margin-top:10px;color:var(--ink-subtle);font-size:12.5px;letter-spacing:.08em}
+.rule-strong{height:1px;background:var(--ink);opacity:.9;margin-top:26px}
+
+.kicker{display:flex;align-items:center;gap:12px;font-size:11.5px;letter-spacing:.18em;color:var(--ink-subtle)}
+.kicker__label{color:var(--accent);font-weight:700}
+.meta{margin-top:14px;font-size:11.5px;letter-spacing:.1em;color:var(--ink-subtle)}
+
+.feature{display:grid;grid-template-columns:5fr 7fr;gap:0 52px;align-items:center;padding:44px 0 40px}
+.feature__media{aspect-ratio:4/3;overflow:hidden;border-radius:2px;background:var(--paper-deep)}
+.feature__media img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.6,.2,1)}
+.feature:hover .feature__media img{transform:scale(1.04)}
+.feature h1{font-family:var(--fd);font-size:clamp(27px,3.4vw,40px);line-height:1.18;letter-spacing:-.012em;margin:16px 0 0;font-weight:700}
+.feature h1 a:hover{color:var(--accent)}
+.feature__lead{margin:15px 0 0;color:var(--ink-muted);font-size:16px;max-width:46ch}
+
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:50px 0 14px}
+.section-head h2{font-family:var(--fd);font-size:21px;letter-spacing:.08em;margin:0;font-weight:700}
+.section-head .more{font-size:12px;color:var(--accent);letter-spacing:.06em}
+
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.row{display:flex;gap:34px;align-items:flex-start;padding:28px 0;border-bottom:1px solid var(--rule);position:relative}
+.row::before{content:"";position:absolute;left:-16px;top:26px;bottom:26px;width:2px;background:var(--accent);opacity:0;transition:opacity .2s}
+.row:hover::before{opacity:1}
+.row__date{flex:0 0 78px;line-height:1}
+.row__d{font-family:var(--fd);font-size:29px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.row__m{margin-top:7px;font-size:11px;color:var(--ink-subtle);letter-spacing:.1em}
+.row__body{flex:1;min-width:0}
+.row h3{font-family:var(--fd);font-size:clamp(18px,1.8vw,22px);line-height:1.42;margin:0;font-weight:700}
+.row:hover h3{color:var(--accent)}
+.row p{margin:8px 0 0;color:var(--ink-muted);font-size:14.5px;max-width:62ch}
+.row__thumb{flex:0 0 128px;width:128px;height:96px;aspect-ratio:4/3;object-fit:cover;border-radius:2px;background:var(--paper-deep);margin-top:4px}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px;padding:44px 0 0}
+.chip{padding:5px 14px;border:1px solid var(--rule-strong);border-radius:999px;font-size:12px;color:var(--ink-muted);transition:all .15s}
+.chip:hover,.chip--on{border-color:var(--accent);color:var(--accent)}
+
+.prose{font-size:17px;line-height:1.9;max-width:43em}
+.prose h2{font-family:var(--fd);font-size:1.6em;line-height:1.35;margin:2.2em 0 .7em;font-weight:700;letter-spacing:-.005em}
+.prose p{margin:0 0 1.35em}
+.prose ul{padding-left:1.3em;margin:0 0 1.35em}
+.prose li+li{margin-top:.4em}
+.prose a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.prose blockquote{margin:0 0 1.5em;padding-left:1.2em;border-left:2px solid var(--accent);color:var(--ink-muted);font-family:var(--fd);font-size:1.06em}
+.prose pre{font-family:var(--fm);font-size:13.5px;line-height:1.7;background:var(--paper-deep);border:1px solid var(--rule);border-radius:3px;padding:18px 20px;overflow:auto;margin:0 0 1.6em}
+.prose code{font-family:var(--fm);font-size:.88em;background:var(--paper-deep);padding:.15em .4em;border-radius:3px}
+.prose pre code{background:none;padding:0}
+/* 首字下沉：只在中文首字时使用 */
+.prose--cjk > p:first-of-type::first-letter{float:left;font-family:var(--fd);font-size:3.2em;line-height:.86;font-weight:700;padding:.06em .1em 0 0;color:var(--ink)}
+/* 英文开头改用小型大写，不下沉 */
+.prose--latin > p:first-of-type::first-letter{font-family:var(--fd);font-size:1.9em;line-height:1;font-weight:700}
+.prose--latin > p:first-of-type{font-variant-numeric:oldstyle-nums}
+
+.article{display:grid;grid-template-columns:minmax(0,1fr) 216px;gap:0 68px;padding:60px 0 0}
+.article h1{font-family:var(--fd);font-size:clamp(31px,3.9vw,50px);line-height:1.14;letter-spacing:-.015em;margin:14px 0 0;font-weight:700}
+.article__lead{margin:16px 0 0;color:var(--ink-muted);font-size:17px;max-width:50ch}
+.article__aside{position:sticky;top:34px;align-self:start;padding-top:34px}
+.toc{border-top:1px solid var(--rule-strong);padding-top:14px}
+.toc__title{font-size:11px;letter-spacing:.2em;color:var(--ink-subtle)}
+.toc ol{list-style:none;margin:12px 0 0;padding:0;font-size:13px;line-height:1.6}
+.toc li{padding:6px 0;border-bottom:1px solid var(--rule)}
+.toc a{color:var(--ink-muted);transition:color .15s}
+.toc a:hover{color:var(--accent)}
+.aside-block{margin-top:32px;font-size:12.5px;color:var(--ink-subtle);line-height:1.9}
+.aside-block b{display:block;font-size:11px;letter-spacing:.2em;font-weight:400;margin-bottom:6px}
+.tagline{display:flex;flex-wrap:wrap;gap:6px 12px}
+.tagline a{color:var(--accent)}
+
+footer{margin-top:76px;border-top:1px solid var(--rule)}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:26px 0;color:var(--ink-subtle);font-size:12px;letter-spacing:.06em}
+
+@media(max-width:900px){
+  .feature{grid-template-columns:1fr;gap:26px 0}
+  .article{grid-template-columns:1fr;gap:0}
+  .article__aside{position:static;padding-top:44px}
+  .toc{display:none}
+}
+@media(max-width:640px){
+  .wrap{padding:0 20px}
+  .masthead{padding-top:36px}
+  .row{gap:18px}
+  .row__date{flex:0 0 52px}
+  .row__d{font-size:23px}
+  .row__thumb{display:none}
+  .nav{gap:16px;font-size:12.5px}
+}</style></head>
+<body>
+<header class="site-header"><div class="wrap site-header__inner">
+  <a class="brand" href="v2-home.html">INTZOT</a>
+  <nav class="nav"><a href="v2-list.html" aria-current="page">文章</a><a href="#">归档</a><a href="#">标签</a><a href="#">搜索</a><a href="#">关于</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="article">
+    <div>
+      <div class="kicker"><span class="kicker__label">技术</span> 2026-10-18 · 18 分钟</div>
+      <h1>用 Rust 重写 Bedrock 地图渲染器的三个月</h1>
+      <p class="article__lead">从 C++ 迁移到 Rust 之后崩溃率降到了零，但真正的收获是那些在迁移过程中才暴露出来的设计问题——它们和语言无关。</p>
+      <div class="rule-strong" style="margin-top:30px"></div>
+
+      <div class="prose prose--cjk" style="margin-top:38px">
+        <h2>一、崩溃消失了，但问题没有</h2>
+        <p>内存错误被消灭了，但设计错误没有。Rust 帮我做到的只是前一半。迁移到第二周我就遇到了一个典型的例子：地图分块的加载和卸载是两套独立的逻辑，各自维护了一份引用计数。</p>
+        <blockquote>编译器不能告诉你该怎么做，它只能告诉你现在这样做不通。剩下的是你自己的事。</blockquote>
+        <p>最后的解法是把两个计数器合并成一个状态机，状态只有四种。改动本身只有几十行，但想明白它花了我四天。</p>
+
+        <h2>二、性能反而是最简单的一环</h2>
+        <p>出图是纯计算，没有 IO 等待，所以优化路径很直接：找到热点，减少分配，把递归改成迭代。</p>
+        <pre><code>pub fn render_region(region: &amp;Region) -&gt; Tile {
+    let mut tile = Tile::new(region.width, region.height);
+    for chunk in region.chunks() {
+        tile.blit(chunk.rasterize());
+    }
+    tile
+}</code></pre>
+        <p>整个渲染时间从 4.2 秒降到 0.8 秒，其中大约一半来自把逐像素写入改成按行写入。</p>
+
+        <h2>三、代价</h2>
+        <ul>
+          <li>编译时间从 6 秒涨到 40 秒，改一行要等一次链接</li>
+          <li>团队里没人写过 Rust，前两周基本在查文档</li>
+          <li>某些地方为了绕过借用检查写了不必要的克隆</li>
+        </ul>
+        <p>但比起「凌晨三点被叫起来看 core dump」，这些都还算可以接受。</p>
+      </div>
+    </div>
+
+    <aside class="article__aside">
+      <div class="toc">
+        <div class="toc__title">目录</div>
+        <ol>
+          <li><a href="#">一、崩溃消失了，但问题没有</a></li>
+          <li><a href="#">二、性能反而是最简单的一环</a></li>
+          <li><a href="#">三、代价</a></li>
+        </ol>
+      </div>
+      <div class="aside-block">
+        <b>标签</b>
+        <div class="tagline"><a href="#">#技术</a> <a href="#">#rust</a> <a href="#">#渲染</a></div>
+      </div>
+      <div class="aside-block">
+        <b>回到</b>
+        <a href="v2-list.html" style="color:var(--accent)">全部文章 →</a>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer><div class="wrap foot"><span>© 2026 intzot</span><span>RSS · GitHub · Email</span></div></footer>
+</body></html>

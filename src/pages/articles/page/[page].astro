@@ -26,10 +26,11 @@ const base = '/articles/';
 
 <Base title="文章">
   <div class="masthead">
+    <div class="masthead__kicker"><b>第 {page.currentPage} 页</b><span>共 {page.totalPages} 页</span></div>
     <h1>文章</h1>
-    <p class="masthead__sub">第 {page.currentPage} 页，共 {page.totalPages} 页。</p>
-    <div class="masthead__rule"></div>
   </div>
+
+  <div class="section-head"><h2>更早</h2></div>
 
   <ListView
     articles={page.data}

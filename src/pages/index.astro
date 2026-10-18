@@ -6,9 +6,10 @@ import { PAGE_SIZE } from '../consts';
 
 const all = await getPublished();
 const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+const hasHero = all.length > 0;
 ---
 
-<Base>
+<Base full overlay={hasHero}>
   <HomeView
     masthead={{ total: all.length, tagCount: countTags(all).length }}
     articles={all.slice(0, PAGE_SIZE)}

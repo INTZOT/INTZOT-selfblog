@@ -1,6 +1,13 @@
 ---
 import Base from './Base.astro';
-import { formatDate, readingMinutes, tagUrl, type Article } from '../utils/articles';
+import { Image } from 'astro:assets';
+import { readingMinutes, tagUrl, type Article } from '../utils/articles';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
 
 interface SeriesNav {
   name: string;
@@ -12,63 +19,111 @@ interface SeriesNav {
 
 interface Props {
   article: Article;
+  headings: Heading[];
   series?: SeriesNav | null;
 }
 
-const { article, series = null } = Astro.props;
+const { article, headings, series = null } = Astro.props;
 const { data, body } = article;
 const desc = data.description ?? '';
+const tags = data.tags;
+const cover = data.cover;
+const date = data.date;
+
+// 目录只取二级标题——三级标题在侧栏里会挤成一团
+const toc = headings.filter((h) => h.depth === 2);
+
+// 首字下沉只在中文开头时启用；英文开头会断在单词中间（§10.7 修订）
+const firstChar = (body ?? '').trimStart().charAt(0);
+const isCjk = /[\u4e00-\u9fff]/.test(firstChar);
+const proseClass = 'prose ' + (isCjk ? 'prose--cjk' : 'prose--latin');
 ---
 
 <Base title={data.title} description={desc} article>
-  <article>
-    <div class="article-head">
-      <time class="article-head__date" datetime={data.date.toISOString()}>
-        {formatDate(data.date)}
-      </time>
+  <div class="wrap">
+    <div class="article">
       <div>
-        <div class="article-head__kind">{readingMinutes(body)} 分钟</div>
+        <div class="article-head__kicker">
+          <b>{tags[0] ?? '文章'}</b>
+          <span>{date.toISOString().slice(0, 10)}</span>
+          <span>{readingMinutes(body)} 分钟</span>
+        </div>
+
         <h1 data-pagefind-meta="title">{data.title}</h1>
-        {desc && <p class="article-head__lead">{desc}</p>}
-      </div>
-      <div class="article-head__rule"></div>
-    </div>
+        {desc && <p class="article__lead">{desc}</p>}
+        <div class="article__rule"></div>
 
-    {
-      series && (
-        <nav class="series-nav" aria-label="系列导航" data-pagefind-ignore>
-          <span class="series-nav__name">{series.name}</span>{' '}
-          <span>
-            （{series.index} / {series.total}）
-          </span>
-          <div class="series-nav__links">
-            {series.prev && <a href={series.prev.url}>← {series.prev.title}</a>}
-            {series.next && (
-              <a class="series-nav__next" href={series.next.url}>
-                {series.next.title} →
-              </a>
-            )}
-          </div>
-        </nav>
-      )
-    }
+        {
+          cover && (
+            <Image
+              class="article-cover"
+              src={cover}
+              alt=""
+              width={1200}
+              height={675}
+              loading="eager"
+              decoding="async"
+            />
+          )
+        }
 
-    {
-      data.tags.length > 0 && (
-        <p class="article-tags" data-pagefind-ignore>
-          {data.tags.map((tag) => (
-            <a href={tagUrl(tag)}>#{tag}</a>
-          ))}
+        {
+          series && (
+            <nav class="series-nav" aria-label="系列导航" data-pagefind-ignore>
+              <span class="series-nav__name">{series.name}</span>{' '}
+              <span>（{series.index} / {series.total}）</span>
+              <div class="series-nav__links">
+                {series.prev && <a href={series.prev.url}>← {series.prev.title}</a>}
+                {series.next && (
+                  <a class="series-nav__next" href={series.next.url}>
+                    {series.next.title} →
+                  </a>
+                )}
+              </div>
+            </nav>
+          )
+        }
+
+        <div class={proseClass} data-pagefind-body>
+          <slot />
+        </div>
+
+        <p class="article-foot" data-pagefind-ignore>
+          <a href="/articles/">← 全部文章</a>
         </p>
-      )
-    }
+      </div>
 
-    <div class="prose prose--dropcap" data-pagefind-body>
-      <slot />
+      <aside class="article__aside">
+        {
+          toc.length > 1 && (
+            <div class="toc">
+              <div class="toc__title">目录</div>
+              <ol>
+                {toc.map((h) => (
+                  <li><a href={'#' + h.slug}>{h.text}</a></li>
+                ))}
+              </ol>
+            </div>
+          )
+        }
+        {
+          tags.length > 0 && (
+            <div class="aside-block">
+              <b>标签</b>
+              {tags.map((tag, i) => (
+                <>
+                  {i > 0 && ' '}
+                  <a href={tagUrl(tag)}>{'#' + tag}</a>
+                </>
+              ))}
+            </div>
+          )
+        }
+        <div class="aside-block">
+          <b>回到</b>
+          <a href="/articles/">全部文章 →</a>
+        </div>
+      </aside>
     </div>
-  </article>
-
-  <p class="article-foot" data-pagefind-ignore>
-    <a href="/articles/">← 全部文章</a>
-  </p>
+  </div>
 </Base>

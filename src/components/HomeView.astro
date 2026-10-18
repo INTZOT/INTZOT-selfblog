@@ -1,14 +1,12 @@
 ---
+import { Image } from 'astro:assets';
 import PostList from './PostList.astro';
 import Pagination from './Pagination.astro';
-import { Image } from 'astro:assets';
-import { excerptOf, formatDate, readingMinutes, urlOf, type Article } from '../utils/articles';
+import { SITE } from '../consts';
+import { excerptOf, readingMinutes, urlOf, type Article } from '../utils/articles';
 
 interface Props {
-  masthead: {
-    total: number;
-    tagCount: number;
-  };
+  masthead: { total: number; tagCount: number };
   articles: Article[];
   currentPage: number;
   totalPages: number;
@@ -18,66 +16,94 @@ interface Props {
 
 const { masthead, articles, currentPage, totalPages, prevUrl, nextUrl } = Astro.props;
 
-// 第 1 页才出头条；它从列表里摘掉，避免同一篇出现两次（§10.7 页面清单）
+// 第 1 页才出整屏头条；它从列表里摘掉，避免同一篇出现两次
 const hero = currentPage === 1 ? articles[0] : undefined;
 const rest = hero ? articles.slice(1) : articles;
+const heroCover = hero?.data.cover;
+const seriesCount = new Set(articles.map((a) => a.data.series).filter(Boolean)).size;
 ---
 
-<div class="masthead">
-  <h1>INTZOT</h1>
-  <p class="masthead__sub">
-    写代码，也写生活。共 {masthead.total} 篇，{masthead.tagCount} 个标签。
-  </p>
-  <div class="masthead__rule"></div>
-</div>
-
 {
-  hero && (
-    <article class="hero">
-      {hero.data.cover && (
-        <a href={urlOf(hero)}>
-          <Image
-            class="article-cover"
-            src={hero.data.cover}
-            alt=""
-            width={1080}
-            height={463}
-            loading="eager"
-            decoding="async"
-          />
-        </a>
-      )}
-      <time class="hero__date" datetime={hero.data.date.toISOString()}>
-        {formatDate(hero.data.date)}
-      </time>
-      <h2 class="hero__title">
-        <a href={urlOf(hero)}>{hero.data.title}</a>
-      </h2>
-      <p class="hero__desc">{excerptOf(hero, 120)}</p>
-      <span class="post-item__meta">
-        {hero.data.tags.map((tag) => '#' + tag).join(' ')}
-        {hero.data.tags.length > 0 && ' · '}
-        {readingMinutes(hero.body)} 分钟
-      </span>
-    </article>
+  /* 没有头条时（还没有文章，或者不在第 1 页）补一个报头，
+     否则整页直接从「最近」开始，连站点标语都看不到 */
+  !hero && (
+    <div class="wrap">
+      <div class="masthead">
+        <p class="masthead__tagline">{SITE.tagline}</p>
+        <div class="masthead__kicker" style="margin-top:10px">
+          <span>{masthead.total} 篇 · {masthead.tagCount} 个标签</span>
+        </div>
+        <div class="masthead__rule"></div>
+      </div>
+    </div>
   )
 }
 
-<div class="section-head">
-  <h2>最近更新</h2>
-  <span class="count">共 {masthead.total} 篇</span>
+{
+  hero && (
+    <section class={'hero' + (heroCover ? '' : ' hero--plain')}>
+      {heroCover && (
+        <div class="hero__bg">
+          <Image
+            src={heroCover}
+            alt=""
+            width={1600}
+            height={900}
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+      )}
+      <div class="wrap hero__inner">
+        <div class="hero__kicker">
+          <b>头条</b>
+          <span>{hero.data.tags[0] ?? ''} · {hero.data.date.toISOString().slice(0, 10)}</span>
+        </div>
+        <h1><a href={urlOf(hero)}>{hero.data.title}</a></h1>
+        <p class="hero__lead">{excerptOf(hero, 120)}</p>
+        <div class="hero__meta">
+          {hero.data.tags.map((tag) => <span>{'#' + tag}</span>)}
+          <span>{readingMinutes(hero.body)} 分钟</span>
+        </div>
+      </div>
+      <div class="hero__cue">向下滚动</div>
+    </section>
+  )
+}
+
+<div class="wrap">
+  <div class="section-head">
+    <h2>最近</h2>
+    <a class="count" href="/articles/">全部 {masthead.total} 篇 →</a>
+  </div>
+
+  <PostList
+    articles={rest}
+    emptyTitle="还没有文章。"
+    emptyHint="第一篇写出来之后，这里会开始有东西。"
+  />
+
+  <Pagination
+    currentPage={currentPage}
+    totalPages={totalPages}
+    prevUrl={prevUrl}
+    nextUrl={nextUrl}
+    archiveHref="/archive/"
+  />
 </div>
 
-<PostList
-  articles={rest}
-  emptyTitle="还没有文章。"
-  emptyHint="第一篇写出来之后，这里会开始有东西。"
-/>
-
-<Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  prevUrl={prevUrl}
-  nextUrl={nextUrl}
-  archiveHref="/archive/"
-/>
+{
+  /* 一篇文章都没有时不显示统计块 —— 三个 0 摆在一块黑底上是最难看的状态 */
+  masthead.total > 0 && (
+    <section class="band">
+      <div class="wrap">
+        <h2>写了多久</h2>
+        <div class="stats">
+          <div><div class="stat__n">{masthead.total}</div><div class="stat__l">篇文章</div></div>
+          <div><div class="stat__n">{masthead.tagCount}</div><div class="stat__l">个标签</div></div>
+          <div><div class="stat__n">{seriesCount}</div><div class="stat__l">个系列</div></div>
+        </div>
+      </div>
+    </section>
+  )
+}
